@@ -1,0 +1,28 @@
+name: PR Checklist Automation
+on:
+  pull_request:
+    types: [opened]
+jobs:
+  add-checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add checklist to PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const checklist = `
+            ## PR Checklist
+            - [ ] Code follows the project's coding standards
+            - [ ] Tests have been added or updated
+            - [ ] Documentation has been updated (if applicable)
+            - [ ] The changes have been reviewed and approved
+            `;
+            
+            const { owner, repo, number } = context.issue;
+            github.rest.pulls.update({
+              owner,
+              repo,
+              pull_number: number,
+              body: checklist
+            });
