@@ -1,0 +1,22 @@
+name: Add Comment Based on Commit
+
+on: push
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    
+    - name: Extract Commits
+      id: extract_commits
+      run: |
+        echo "::set-output name=commits::$(git log -1 --pretty=%B)"
+    
+    - name: Create Issue Comment
+      uses: peter-evans/create-issue-from-file@v4
+      with:
+        title: 'Comment for Latest Commit'
+        filename: description.txt
+
+   
